@@ -11,17 +11,44 @@
 
 <script>
 export default {
-  name: "KbnButton",
+  name: 'KbnButton',
 
   props: {
     type: {
       type: String,
-      default: "button"
+      default: 'button'
     },
-    disabled: {}
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  computed: {
+    // `type`に応じてクラスを動的に生成する
+    classes () {
+      const cls = this.type === 'text' ? ('-' + this.type) : ''
+      return [`kbn-button${cls}`]
+    }
+  },
+
+  methods: {
+    // `click`イベントを発行
+    handleClick (ev) {
+      this.$emit('click', ev)
+    }
   }
 }
 </script>
 
 <style>
-</style>template
+.kbn-button {
+  padding: .6em 1.3em;
+}
+
+.kbn-button-text {
+  border: none;
+  padding-right: 0;
+  padding-left: 0;
+}
+</style>

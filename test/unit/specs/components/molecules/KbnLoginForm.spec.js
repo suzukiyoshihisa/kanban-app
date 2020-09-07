@@ -2,7 +2,6 @@ import {
   mount
 } from '@vue/test-utils'
 import KbnLoginForm from '@/components/molecules/KbnLoginForm.vue;'
-import { expect } from 'chai'
 
 describe('KbnLoginForm', () => {
   describe('プロパティ', () => {
@@ -131,11 +130,77 @@ describe('KbnLoginForm', () => {
         it('ログイン処理は無効', () => {
           loginForm.setData({
             email: 'foo@domain.com',
-            password: '12345678'
+            password: '12345678',
             progress: true
           })
         })
         expect(loginForm.vm.disableLoginAction).to.equal(true)
+      })
+    })
+  })
+
+  describe('onlogin', () => {
+    let loginForm
+    let onloginStub
+    beforeEach(done => {
+      onloginStub = sinon.stub()
+      loginForm = mount(KbnLoginForm, {
+        propsData: { onlogin: onloginStub }
+      })
+      loginForm.setData({
+        email: 'foo@domain.com',
+        password: '12345678'
+      })
+      loginForm.vm.$nextTick(done)
+    })
+
+    describe('resolve', () => {
+      it('resolveされること', done => {
+        onloginStub.resolves()
+
+        // クリックイベント
+        loginForm.find('button').trigger('click')
+        expect(onloginStub.called).to.equal(false) // まだresolveされない
+        expect(loginForm.vm.error).to.equal('') // エラーメッセージは初期化
+        expect(loginForm.vm.disableLoginAction).to.equal(true) // ログインアクションは不可
+
+        // 状態の反映
+        loginForm.vm.$nextTick(() => {
+          expect(onloginStub.called).to.equal(true) // resolveされた
+          const authInfo = onloginStub.args[0][0]
+          expect(authInfo.email).to.equal(loginForm.vm.email)
+          expect(authInfo.password).to.equal(loginForm.vm.password)
+          loginForm.vm.$nextTick(() => { // resolve内での状態の反映
+            expect(loginForm.vm.error).to.equal('') // エラーメッセージは初期化のまま
+            expect(loginForm.vm.disableLoginAction).to.equal(false) // ログインアクションは可能
+            done()
+          })
+        })
+      })
+    })
+
+    describe('reject', () => {
+      it('rejectされること', done => {
+        onloginStub.rejects(new Error('login error!'))
+
+        // クリックイベント
+        loginForm.find('button').trigger('click')
+        expect(onloginStub.called).to.equal(false) // まだrejectされない
+        expect(loginForm.vm.error).to.equal('') // エラーメッセージは初期化
+        expect(loginForm.vm.disableLoginAction).to.equal(true) // ログインアクションは不可
+
+        // 状態の反映
+        loginForm.vm.$nextTick(() => {
+          expect(onloginStub.called).to.equal(true) // rejectされた
+          const authInfo = onloginStub.args[0][0]
+          expect(authInfo.email).to.equal(loginForm.vm.email)
+          expect(authInfo.password).to.equal(loginForm.vm.password)
+          loginForm.vm.$nextTick(() => {
+            expect(loginForm.vm.error).to.equal('login error!') // エラーメッセージが設定される
+            expect(loginForm.vm.disableLoginAction).to.equal(false) // ログインアクションは可能
+            done()
+          })
+        })
       })
     })
   })

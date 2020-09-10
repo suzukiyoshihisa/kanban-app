@@ -1,167 +1,37 @@
 <template>
-  <form novalidate>
-    <div class="form-item">
-      <label for="email">メールアドレス</label>
-      <input
-        id="email"
-        v-model="email"
-        type="text"
-        autocomplete="off"
-        placeholder="例：kanban@damain.com"
-        @focus="resetError"
-      >
-      <ul class="validation-errors">
-        <li v-if="!validation.email.fomat">メールアドレスの形式が不正です</li>
-        <li v-if="!validation.email.required">メールアドレスが入力されていません</li>
-      </ul>
+  <div>
+    <p>ログインページ</p>
+    <div class="login-view">
+      <h1>Kanban APP</h1>
+      <KbnLoginForm :onlogin="handleLogin"/>
     </div>
-    <div class="form-item">
-      <label for="password">
-        <input
-          v-modal="password"
-          id="password"
-          autocomplete="off"
-          placeholder="例：xxxxxxxx"
-          type="password"
-          @focus="resetError"
-        >
-        <ul class="validation-errors">
-          <li v-if="!validation.password.required">パスワードが入力されていません。</li>
-        </ul>
-      </label>
-    </div>
-    <div class="form-actions">
-      <kbnButton
-        :disabled="disableLoginAction"
-        @click="handleClick"
-      />ログイン</kbnbutton>
-      <p
-        v-if="progress"
-        class="login-progress"/>ログイン中</p>
-      <p
-        v-if="error"
-        class="login-error"
-      />{{ error }}</p>
-    </div>
-  </form>
+  </div>
 </template>
 
 <script>
-// KbnButtonをインポート
-import KbnButton from '@/components/atoms/KbnButton'
-// メールアドレスのフォーマットをチェックする正規表現
-const REGEX_EMAIL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const required = val => !!val.trim()
-
+import KbnLoginForm from '@/components/moleculese/KbnLoginForm.vue'
 export default {
-  name: 'KbnLoginForm',
-
+  name: 'KbnLoginView',
   components: {
-    KbnButton
-  },
-
-  props: {
-    onlogin: {
-      type: Function,
-      required: true
-    }
-  },
-
-  data () {
-    return {
-      email: '',
-      password: '',
-      progress: false,
-      error: ''
-    }
-  },
-
-  computed: {
-    validation () { // emailとpasswordのバリデーション
-      return {
-        email: {
-          required: required(this.email),
-          format: REGEX_EMAIL.test(this.email)
-        },
-        password: {
-          required: required(this.password)
-        }
-      }
-    },
-
-    valid () {
-      const validation = this.validation // 先に定義したvalidationを用いて可否を返す
-      const fields = Object.kyes(validation)
-      let valid = true
-      for (let i = 0; i < fields.length; i++) {
-        const field = fields[i]
-        valid = Object.keys(validation[fields]).every(key => validation[field][key])
-        if (!valid) { break }
-      }
-      return valid
-    },
-
-    disableLoginAction () { // validを使ってログイン処理の可否、progressは後述
-      return !this.valid || this.progress
-    }
+    KbnLoginForm
   },
 
   methods: {
-    resetError () {
-      this.error = ''
+    handleLogin (authInfo) {
+      return this.$store.dispatch('login', authInfo)
+        .then(() => {
+          this.$router.push({path: '/'})
+        })
+        .catch(err => this.throwReject(err))
     },
-
-    handleClick (ev) {
-      if (this.disableLoginAction) {} // 不備があればログイン処理が実行されないようにする
-      this.progress = true // ログイン処理実行中をあらわす
-      this.error = ''
-
-      this.$nextTick(() => {
-        this.onlogin({email: this.email, password: this.password})
-          .catch(err => {
-            this.error = err.message
-          })
-          .then(() => {
-            this.progress = false
-          })
-      })
-    }
+    throwReject (err) { return Promise.reject(err) }
   }
 }
 </script>
 
 <style scoped>
-from {
-  display: block;
-  margin: 0 auto;
-  text-align: left;
-}
-
-label {
-  display: block;
-}
-
-input {
-  width: 100%;
-  padding: .5em;
-  font: inherit;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  font: inherit;
-}
-
-ul li {
-  font-size: 0.5em;
-}
-
-.validation-errors {
-  height: 32px;
-}
-
-.from-action p {
-  font-size: .5em;
+.login-veiw {
+  width: 320px;
+  margin: auto;
 }
 </style>

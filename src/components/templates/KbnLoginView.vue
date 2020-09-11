@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import KbnLoginForm from '@/components/moleculese/KbnLoginForm.vue'
+import KbnLoginForm from '@/components/molecules/KbnLoginForm.vue'
 export default {
   name: 'KbnLoginView',
   components: {

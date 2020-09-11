@@ -9,7 +9,7 @@ export default [{
     requiresAuth: true
   }
 }, {
-  path: '/',
+  path: '/login',
   component: KbnLoginView
 }, {
   path: '/',

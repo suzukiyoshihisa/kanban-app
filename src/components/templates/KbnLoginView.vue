@@ -3,6 +3,7 @@
     <p>ログインページ</p>
     <div class="login-view">
       <h1>Kanban APP</h1>
+      テスト
       <KbnLoginForm :onlogin="handleLogin"/>
     </div>
   </div>

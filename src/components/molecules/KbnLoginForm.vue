@@ -31,17 +31,17 @@
       </label>
     </div>
     <div class="form-actions">
-      <kbnButton
-        :disabled="disableLoginAction"
+      <KbnButton
+        :disabled="true"
         @click="handleClick"
-      />ログイン</kbnbutton>
-      <p
+      />ログイン</Kbnbutton>
+      <!--p
         v-if="progress"
         class="login-progress"/>ログイン中</p>
       <p
         v-if="error"
         class="login-error"
-      />{{ error }}</p>
+      />{{ error }}</p-->
     </div>
   </form>
 </template>

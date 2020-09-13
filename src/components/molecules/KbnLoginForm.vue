@@ -35,13 +35,13 @@
         :disabled="true"
         @click="handleClick"
       />ログイン</Kbnbutton>
-      <!--p
+      <p
         v-if="progress"
         class="login-progress"/>ログイン中</p>
       <p
         v-if="error"
         class="login-error"
-      />{{ error }}</p-->
+      />{{ error }}</p>
     </div>
   </form>
 </template>

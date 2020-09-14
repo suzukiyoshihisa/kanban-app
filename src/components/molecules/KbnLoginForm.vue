@@ -34,14 +34,20 @@
       <KbnButton
         :disabled="true"
         @click="handleClick"
-      />ログイン</Kbnbutton>
+      >
+        ログイン
+      </Kbnbutton>
       <p
         v-if="progress"
-        class="login-progress"/>ログイン中</p>
+        class="login-progress">
+        ログイン中...
+      </p>
       <p
         v-if="error"
         class="login-error"
-      />{{ error }}</p>
+      >
+        {{ error }}
+      </p>
     </div>
   </form>
 </template>
@@ -131,7 +137,7 @@ export default {
 </script>
 
 <style scoped>
-from {
+form {
   display: block;
   margin: 0 auto;
   text-align: left;

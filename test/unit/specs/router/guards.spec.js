@@ -40,7 +40,7 @@ const setup = state => {
   const router = new VueRouter({
     routes: [{
       path: '/',
-      component: 'Top',
+      component: Top,
       meta: { requireAuth: true }
     }, {
       path: '/login',

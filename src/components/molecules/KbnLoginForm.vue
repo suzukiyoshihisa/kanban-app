@@ -84,7 +84,6 @@ export default {
 
   computed: {
     validation () { // emailとpasswordのバリデーション
-      console.log(this.password)
       return {
         email: {
           required: required(this.email),

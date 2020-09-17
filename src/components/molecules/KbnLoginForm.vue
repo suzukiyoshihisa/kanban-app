@@ -11,15 +11,15 @@
         @focus="resetError"
       >
       <ul class="validation-errors">
-        <li v-if="!validation.email.fomat">メールアドレスの形式が不正です</li>
+        <li v-if="!validation.email.format">メールアドレスの形式が不正です</li>
         <li v-if="!validation.email.required">メールアドレスが入力されていません</li>
       </ul>
     </div>
     <div class="form-item">
       <label for="password">
         <input
-          v-modal="password"
           id="password"
+          v-model="password"
           autocomplete="off"
           placeholder="例：xxxxxxxx"
           type="password"
@@ -84,6 +84,7 @@ export default {
 
   computed: {
     validation () { // emailとpasswordのバリデーション
+      console.log(this.password)
       return {
         email: {
           required: required(this.email),
@@ -101,7 +102,6 @@ export default {
       let valid = true
       for (let i = 0; i < fields.length; i++) {
         const field = fields[i]
-        console.log(field)
         valid = Object.keys(validation[field]).every(key => validation[field][key])
         if (!valid) { break }
       }

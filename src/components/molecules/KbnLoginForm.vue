@@ -32,7 +32,7 @@
     </div>
     <div class="form-actions">
       <KbnButton
-        :disabled="true"
+        :disabled="disableLoginAction"
         @click="handleClick"
       >
         ログイン
@@ -97,11 +97,12 @@ export default {
 
     valid () {
       const validation = this.validation // 先に定義したvalidationを用いて可否を返す
-      const fields = Object.kyes(validation)
+      const fields = Object.keys(validation)
       let valid = true
       for (let i = 0; i < fields.length; i++) {
         const field = fields[i]
-        valid = Object.keys(validation[fields]).every(key => validation[field][key])
+        console.log(field)
+        valid = Object.keys(validation[field]).every(key => validation[field][key])
         if (!valid) { break }
       }
       return valid
